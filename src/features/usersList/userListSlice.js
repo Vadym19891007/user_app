@@ -11,7 +11,7 @@ export const fetchUsers = createAsyncThunk("userList/fetchUsers", async () => {
   if (!res.ok) {
     throw new Error("Failed to fetch");
   }
-  return res.json();
+  return await res.json();
 });
 
 const userListReducer = createSlice({
@@ -27,13 +27,16 @@ const userListReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.pending, (state) => {
-      (state.loading = true), (state.error = false);
+      state.loading = true;
+      state.error = null;
     });
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      (state.loading = false), (state.users = action.payload);
+      state.loading = false;
+      state.users = action.payload;
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {
-      (state.loading = false), (state.error = action.error);
+      state.loading = false;
+      state.error = action.payload;
     });
   },
 });
